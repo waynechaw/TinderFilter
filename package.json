@@ -4,6 +4,7 @@
   "description": "Tinder filter",
   "main": "TinderTest.js",
   "dependencies": {
+    "request": "^2.69.0",
     "tinderjs": "^1.0.8"
   },
   "devDependencies": {},
