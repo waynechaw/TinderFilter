@@ -2,7 +2,7 @@ var request = require('request');
 var tinder = require('tinderjs');
 var client = new tinder.TinderClient();
 
-var FB_USER_TOKEN = 'CAAGm0PX4ZCpsBAEHm0PkDfM45VbOktP6PioSCaajuQzGoSC9JRUs28tiFT4xTqIfFezZCdiM3B6ZAfA1rWsSzwRxIZASIOahhwJyHgZA6s8LsJrBQHfiEfA9N4ZCrx4RKOu2xGZCkdI8XZBkbNPcO2jCdZCrkQW1cZAnk0kZBu1Omet06qveyrjZChzPFzLr0lnz6cpbOAqqip0nZBoRuypOFWhFk';
+var FB_USER_TOKEN = 'CAAGm0PX4ZCpsBAH6QQN4J2IQMLL8jeXsCRx2dMwMZCEZBMjT6Utl80TNixqqqiMQKLvhDnZCZBaY1VQmOMQdZBJW0vVTez41pHx8NoyzzsTSTyYj0dB3vIMl4JKJSfF6I87vhG07KZBOLZAptYyBa5ESPemIYZAJfL4xUcULvaGoINd4KzK8w1oMrLuWbn0v9zkLSZC8rO3cF98yQKehrWnRda';
 var FB_USER_ID = '2539134351764';
 
 
@@ -10,16 +10,6 @@ var FB_USER_ID = '2539134351764';
 var URL;
 var pictureCount = 0;
 var pictureObj = {};
-
-var requestCallback = function(error, response, body, cb){
-  console.log("Request Callback Invoked")
-  if(!error && response.statusCode == 200){
-
-    var parsed = JSON.parse(body)
-    var attributes = parsed.face[0].attribute;
-    cb(attributes);
-  } 
-}
 
 var runFacialRecognition = function(URL, cb){
   var options = {
@@ -29,7 +19,20 @@ var runFacialRecognition = function(URL, cb){
       Accept: 'application/json'
     }
   }
-  request(options, requestCallback);
+  
+  request(options, function(error, response, body){
+
+	  if(!error && response.statusCode == 200){
+
+	    var parsed = JSON.parse(body)
+
+	    if (parsed.face[0] !== undefined){
+	    	var attributes = parsed.face[0].attribute;
+	    	cb(attributes);
+	    }
+
+	  } 
+	});
 }
 
 //runFacialRecognition(options) 
@@ -43,9 +46,7 @@ client.authorize(
         URL = photo.url;
         console.log(URL)
         runFacialRecognition(URL, function(val){
-          client.like(data._userID, function(val){
-            console.log("Liked!")
-          })
+        	console.log(val);
         });
 
       });
